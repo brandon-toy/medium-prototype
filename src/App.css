@@ -1,5 +1,10 @@
 .App {
-  text-align: center;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+Accordion {
+  overflow: visible;
 }
 
 .App-logo {
@@ -22,6 +27,24 @@
 .App-link {
   color: #61dafb;
 }
+
+.info {
+  margin-top: 5%;
+}
+
+.pinfo {
+  text-align: left;
+}
+
+#calendarphoto {
+  width: 80%;
+  margin-top: -2%;
+} 
+
+#ProgressBar {
+  margin-top: 50px;
+}
+
 
 @keyframes App-logo-spin {
   from {
