@@ -1,12 +1,18 @@
 import React from 'react';
 import './App.css';
-import {Accordion,Card,Container,Dropdown,Row,Col,ProgressBar} from 'react-bootstrap'
+import {Accordion,Card,Container,Button,Row,Col,ProgressBar} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
+import FullCalendar from '@fullcalendar/react'
+import timegridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 import Select from 'react-select';
-
+import "./main.scss";
 
 class App extends React.Component {
+
+  calendarRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +30,11 @@ class App extends React.Component {
         {value:'Second Term: Jan - Apr 2020', label:'Second Term: Jan - Apr 2020'},
         {value:'First Term: Sep - Dec 2019', label:'First Term: Sep - Dec 2019'}
       ],
+      events: [{
+        title:'',
+        start: '2019-07-01',
+        allday: 'true'
+      }],
       courses_bio:[
         {value:'BIOL 184',label:'BIOL 184'},
         {value:'BIOL 186',label:'BIOL 186'},
@@ -42,6 +53,9 @@ class App extends React.Component {
       ]
     };
     this.courses = this.courses.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.addEvent = this.addEvent.bind(this);
+    this.someMethod = this.someMethod.bind(this);
     this.course1update = this.course1update.bind(this);
     this.course2update = this.course2update.bind(this);
     this.course3update = this.course3update.bind(this);
@@ -51,9 +65,13 @@ class App extends React.Component {
   semesterChange = (semester) => {
     this.setState({
       semester: semester
-
     });
   };
+
+componentDidMount = () => {
+  // let draggableEl = document.getElementById('mydraggable');
+  // new Dragabble(draggableEl);
+}
 
   course1update = (update) => {
     const filterarr = this.state.courses_bio.filter(item => item !== update)
@@ -96,7 +114,7 @@ class App extends React.Component {
     }
     console.log(filterarr)
   }
-
+  
   course4update = (update) => {
     const filterarr = this.state.courses_bio.filter(item => item !== update)
     this.setState({
@@ -112,6 +130,22 @@ class App extends React.Component {
     console.log(filterarr)
   }
 
+  addEvent(info) {
+    console.log(info.startStr)
+    console.log(info.endStr)
+    const tmparr = {
+      title: 'Unavailable', 
+      start: info.startStr, 
+      end: info.endStr }
+    const tmparrState = this.state.events
+    tmparrState.push(tmparr);
+    console.log(tmparrState[2])
+    this.setState ({
+       events: tmparrState
+    });
+    console.log(this.state.events.length)
+    console.log(this.state.events)
+  }
 
   courses = (num_courses) => {
     this.setState({
@@ -123,10 +157,10 @@ class App extends React.Component {
   }
 
   render() {
-    const {semester} = this.state;
     return (
       <div className="App">
-        <div className="info">
+          <div className="info">
+          <div className="my-form"></div>
           <Container>
             <Row >
               <Col xs lg="4">
@@ -230,7 +264,7 @@ class App extends React.Component {
                   </Row>
                   <Row>
                     <Col>
-                      <div class='accdropdown'>
+                      <div className='accdropdown'>
                         <Select menuPortalTarget={document.body} styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={[
                         {'value': 'All', 'label': 'All'},
                         {'value': this.state.course1 + ' A01', 'label': this.state.course1 +' A01'},
@@ -268,32 +302,26 @@ class App extends React.Component {
                     <Col>
                       <Select menuPortalTarget={document.body} styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={[
                         {'value':'All','label': 'All'},
-                        {'value': this.state.course1 + ' TO1', 'label': this.state.course1 + ' T01'},
-                        {'value': this.state.course2 + ' T02', 'label': this.state.course1 + ' T02'}
+                        {'value': this.state.course2 + ' TO1', 'label': this.state.course2 + ' T01'},
+                        {'value': this.state.course2 + ' T02', 'label': this.state.course2 + ' T02'}
                       ]} />
                     </Col>
                     <Col>
                       <Select menuPortalTarget={document.body} styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={[
                         {'value': 'All', 'label': 'All'},
-                        {'value': this.state.course1 + ' B01', 'label': this.state.course1 + ' B01'}
+                        {'value': this.state.course3 + ' B01', 'label': this.state.course3 + ' B01'}
                       ]} />
                     </Col>
                     <Col>
                       <Select menuPortalTarget={document.body} styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={[
                         {'value': 'All', 'label': 'All'},
-                        {'value': this.state.course1 + ' B01', 'label': this.state.course1 + ' B01'},
-                        {'value': this.state.course2 + ' B02', 'label': this.state.course2 + ' B02'},
-                        {'value': this.state.course3 + ' B03', 'label': this.state.course3 + ' B03'}
+                        {'value': this.state.course4 + ' B01', 'label': this.state.course4 + ' B01'},
+                        {'value': this.state.course4 + ' B02', 'label': this.state.course4 + ' B02'},
+                        {'value': this.state.course4 + ' B03', 'label': this.state.course4 + ' B03'}
                       ]}/>
                     </Col>
                   </Row>
                 </Container>
-
-                {/* <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br> */}
               </Card.Body>
             </Accordion.Collapse>
           </Card>
@@ -302,17 +330,54 @@ class App extends React.Component {
               Select All Unavailable Timeslots
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="1">
-              <Card.Body>test</Card.Body>
+              <Card.Body>
+                  <div id="remove_event" className='remove_events'/>
+              
+                  <FullCalendar defaultView="timeGridWeek" 
+                    ref={this.calendarRef}
+                    columnHeaderFormat = {{
+                      weekday:'short'
+                    }}
+                    // allDaySlot={false}
+                    plugins={[ timegridPlugin,interactionPlugin ]} 
+                    selectable='true'
+                    unselectAuto={false}
+                    weekends={false}
+                    select = {(info) => {
+                      this.someMethod(info)
+                    }}
+                    eventColor =  'red'
+                    eventTextColor = 'red'
+                    header = {false}
+                    // droppable='true' 
+                    minTime="7:00am" 
+                    // allDayText='Click Here'
+                    events={this.state.events}
+                    />
+              </Card.Body>
             </Accordion.Collapse>
           </Card>
         </Accordion>
         </Container>) : <div></div>
-        }</div>
+        }
+        <br></br>
+        <div>
+          {(this.state.now === 66) ? <Button>Generate!</Button> : <div></div>}
+         </div>
+        </div>
       </div>
     );
+  }
+  someMethod(info) {
+    let calendarApi = this.calendarRef.current.getApi()
+    calendarApi.addEvent({
+      title: 'unavailable',
+      start: info.startStr,
+      end: info.endStr,
+      allday: 'false'
+    })
   }
 }
 
 
-
-export default App;
+export default App
