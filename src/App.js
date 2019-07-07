@@ -329,7 +329,7 @@ componentDidMount = () => {
             <Accordion.Collapse eventKey="1">
               <Card.Body>
                   <div id="remove_event" className='remove_events'/>
-              
+                   Drag to add a time, and click a red space to remove
                   <FullCalendar defaultView="timeGridWeek" 
                     ref={this.calendarRef}
                     columnHeaderFormat = {{
