@@ -52,7 +52,7 @@ class App extends React.Component {
     this.courses = this.courses.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.addEvent = this.addEvent.bind(this);
-    this.someMethod = this.someMethod.bind(this);
+    this.addEventDrag = this.addEventDrag.bind(this);
     this.course1update = this.course1update.bind(this);
     this.course2update = this.course2update.bind(this);
     this.course3update = this.course3update.bind(this);
@@ -341,7 +341,10 @@ componentDidMount = () => {
                     unselectAuto={false}
                     weekends={false}
                     select = {(info) => {
-                      this.someMethod(info)
+                      this.addEventDrag(info)
+                    }}
+                    eventClick = {(info) => {
+                      info.event.remove()
                     }}
                     eventColor =  'red'
                     eventTextColor = 'red'
@@ -366,7 +369,7 @@ componentDidMount = () => {
       </div>
     );
   }
-  someMethod(info) {
+  addEventDrag(info) {
     let calendarApi = this.calendarRef.current.getApi()
     calendarApi.addEvent({
       title: 'unavailable',
@@ -375,6 +378,7 @@ componentDidMount = () => {
       allday: 'false'
     })
   }
+
 }
 
 
