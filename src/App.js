@@ -31,9 +31,6 @@ class App extends React.Component {
         {value:'First Term: Sep - Dec 2019', label:'First Term: Sep - Dec 2019'}
       ],
       events: [{
-        title:'',
-        start: '2019-07-01',
-        allday: 'true'
       }],
       courses_bio:[
         {value:'BIOL 184',label:'BIOL 184'},
@@ -361,8 +358,9 @@ componentDidMount = () => {
         </Container>) : <div></div>
         }
         <br></br>
-        <div>
-          {(this.state.now === 66) ? <Button>Generate!</Button> : <div></div>}
+        <div style={{textAlign: 'center'}}>
+          {(this.state.now === 66) ? 
+          <Button>Generate!</Button> : <div></div>}
          </div>
         </div>
       </div>

@@ -45,6 +45,10 @@ Accordion {
   margin-top: 50px;
 }
 
+Button {
+  text-align: center;
+}
+
 
 @keyframes App-logo-spin {
   from {
