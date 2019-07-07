@@ -50,6 +50,7 @@ class App extends React.Component {
       ]
     };
     this.courses = this.courses.bind(this);
+    this.changeSemester = this.changeSemester.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.addEvent = this.addEvent.bind(this);
     this.addEventDrag = this.addEventDrag.bind(this);
@@ -59,10 +60,18 @@ class App extends React.Component {
     this.course4update = this.course4update.bind(this);
   }
 
-  semesterChange = (semester) => {
-    this.setState({
-      semester: semester
-    });
+  changeSemester = (semester) => {
+    console.log(this.state.semester)
+    if(this.state.courses !== '0') {
+      this.setState({
+        semester:1,
+        now: 33
+      })
+    } else {
+      this.setState({
+        semester: 1
+      });
+    }
   };
 
 componentDidMount = () => {
@@ -145,12 +154,20 @@ componentDidMount = () => {
   }
 
   courses = (num_courses) => {
-    this.setState({
-      courses:num_courses['value'],
-      now: 33,
-      progressbarcolor: ''
+    console.log(this.state.semester)
+    if(this.state.semester !== null) {
+      this.setState({
+        courses: num_courses['value'],
+        now: 33,
+        progressbarcolor: ''
     })
-    console.log(this.state.courses)
+    } else {
+      this.setState({
+        courses: num_courses['value'],
+        progressbarcolor: ''
+      })
+    }
+
   }
 
   render() {
@@ -215,7 +232,7 @@ componentDidMount = () => {
         {/*  Num of courses based on number of courses field in the past*/}
         <Container>
           <div>
-          {(this.state.courses === '4') ? 
+          {(this.state.now >= 33) ? 
           (
             <Container>
               <Row>
@@ -346,8 +363,9 @@ componentDidMount = () => {
                     eventClick = {(info) => {
                       info.event.remove()
                     }}
+                    displayEventTime = {false}
                     eventColor =  'red'
-                    eventTextColor = 'red'
+                    // eventTextColor = 'red'
                     header = {false}
                     // droppable='true' 
                     minTime="7:00am" 
@@ -372,7 +390,7 @@ componentDidMount = () => {
   addEventDrag(info) {
     let calendarApi = this.calendarRef.current.getApi()
     calendarApi.addEvent({
-      title: 'unavailable',
+      title: '',
       start: info.startStr,
       end: info.endStr,
       allday: 'false'
