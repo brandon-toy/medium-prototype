@@ -407,6 +407,7 @@ class App extends React.Component {
                 plugins={[timegridPlugin, interactionPlugin, dayGridPlugin]}
                 defaultView="timeGridWeek"
                 weekends={false}
+                maxTime='18:00:00'
                 header={{
                   left: 'prev,next',
                   right:''
