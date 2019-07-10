@@ -6,8 +6,10 @@ import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import FullCalendar from '@fullcalendar/react'
 import timegridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import { animateScroll as scroll } from 'react-scroll'
 import Select from 'react-select';
 import "./main.scss";
+import dayGridPlugin from '@fullcalendar/daygrid';
 
 class App extends React.Component {
 
@@ -20,11 +22,13 @@ class App extends React.Component {
       semester:null,
       selectedoption: null,
       progressbarcolor: 'info',
+      hideGenerate: false,
       courses: '0',
       course1: '',
       course2: '',
       course3: '',
       course4: '',
+      animated: true,
       semester_options:[
         {value:'Summer Term: May - Aug 2020', label:'Summer Term: May - Aug 2020'},
         {value:'Second Term: Jan - Apr 2020', label:'Second Term: Jan - Apr 2020'},
@@ -51,7 +55,7 @@ class App extends React.Component {
     };
     this.courses = this.courses.bind(this);
     this.changeSemester = this.changeSemester.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
+    this.buttonPress = this.buttonPress.bind(this);
     this.addEvent = this.addEvent.bind(this);
     this.addEventDrag = this.addEventDrag.bind(this);
     this.course1update = this.course1update.bind(this);
@@ -60,11 +64,12 @@ class App extends React.Component {
     this.course4update = this.course4update.bind(this);
   }
 
+
   changeSemester = (semester) => {
     console.log(this.state.semester)
     if(this.state.courses !== '0') {
       this.setState({
-        semester:1,
+        semester:semester,
         now: 33
       })
     } else {
@@ -74,10 +79,15 @@ class App extends React.Component {
     }
   };
 
-componentDidMount = () => {
-  // let draggableEl = document.getElementById('mydraggable');
-  // new Dragabble(draggableEl);
-}
+  buttonPress = () => {
+    this.setState({
+      hideGenerate: true,
+      now: 100,
+      progressbarcolor: 'success',
+      animated:false
+    })
+    scroll.scrollToBottom();
+  }
 
   course1update = (update) => {
     const filterarr = this.state.courses_bio.filter(item => item !== update)
@@ -171,8 +181,10 @@ componentDidMount = () => {
   }
 
   render() {
+    const buttonPressStyle = (this.state.hideGenerate) ? {display:'none'} : {};
     return (
       <div className="App">
+        
           <div className="info">
           <div className="my-form"></div>
           <Container>
@@ -199,7 +211,7 @@ componentDidMount = () => {
           </Container>
         </div>
         <div id="ProgressBar">
-          <ProgressBar variant={this.state.progressbarcolor} animated now={this.state.now} label={this.state.now+'%'} />
+          <ProgressBar variant={this.state.progressbarcolor} animated={this.state.animated} now={this.state.now} label={this.state.now+'%'} />
         </div>
         <p></p>
         {/* Semester and number of courses field */}
@@ -236,10 +248,10 @@ componentDidMount = () => {
           (
             <Container>
               <Row>
-                <Col>1</Col>
-                <Col>2</Col>
-                <Col>3</Col>
-                <Col>4</Col>
+                <Col>Course 1</Col>
+                <Col>Course 2</Col>
+                <Col>Course 3</Col>
+                <Col>Course 4</Col>
               </Row>
               <Row>
                 <Col>
@@ -381,8 +393,99 @@ componentDidMount = () => {
         <br></br>
         <div style={{textAlign: 'center'}}>
           {(this.state.now === 66) ? 
-          <Button>Generate!</Button> : <div></div>}
+            <Button onClick={this.buttonPress} style={buttonPressStyle}>Generate!</Button> 
+          : <div></div>}
          </div>
+          {this.state.hideGenerate ?
+            <div style={{marginTop:'40px'}}>
+              <h1>Generated Timetable</h1>
+              <FullCalendar
+                columnHeaderFormat={{
+                  weekday: 'short'
+                }}
+                style={{ marginTop: '20px' }}
+                plugins={[timegridPlugin, interactionPlugin, dayGridPlugin]}
+                defaultView="timeGridWeek"
+                weekends={false}
+                header={{
+                  left: 'prev,next',
+                  right:''
+                }}
+                minTime="7:00am"
+                eventTextColor='white'
+                allDaySlot={false}
+                events={[{ /* event 1 */
+                  title: this.state.course1,
+                  startTime: '08:30',
+                  endTime: '09:50',
+                  startRecur: '2019-07-06T08:30:00',
+                  color: 'purple',
+                  allDay: false,
+                  daysOfWeek: [1, 4] // Repeat monday and thursday
+                }, { // Event 2
+                  title: this.state.course2,
+                  startTime: '9:30',
+                  endTime: '10:20',
+                  startRecur: '2019-07-06T08:30:00',
+                  color: 'orange',
+                  allDay: false,
+                  daysOfWeek: [2, 3, 5]
+                }, { // Event 3
+                  title: this.state.course3,
+                  startTime: '10:30',
+                  endTime: '11:20',
+                  startRecur: '2019-07-06T08:30:00',
+                  color: 'blue',
+                  allDay: false,
+                  daysOfWeek: [2, 3, 5]
+                }, { // Event 4
+                  title: this.state.course4,
+                  startTime: '13:00',
+                  endTime: '14:20',
+                  startRecur: '2019-07-01T08:30:00',
+                  color: 'gray',
+                  allDay: false,
+                  daysOfWeek: [1, 4]
+                }, {
+                  title: this.state.course4 + " B01",
+                  startTime: '13:00',
+                  endTime: '14:20',
+                  startRecur: '2019-07-01T08:30:00',
+                  color: 'gray',
+                  allDay: false,
+                  daysOfWeek: [5],
+                  borderColor: 'black'
+                }, {
+                  title: this.state.course2 + " T03",
+                  startTime: '11:30',
+                  endTime: '12:20',
+                  startRecur: '2019-07-01T08:30:00',
+                  color: 'orange',
+                  allDay: false,
+                  daysOfWeek: [3],
+                  borderColor: 'black'
+                }, {
+                  title: this.state.course3 + " B01",
+                  startTime: '14:00',
+                  endTime: '15:20',
+                  startRecur: '2019-07-01T08:30:00',
+                  color: 'blue',
+                  allDay: false,
+                  daysOfWeek: [2],
+                  borderColor: 'black'
+                }, {
+                  title: this.state.course1 + " B01",
+                  startTime: '10:00',
+                  endTime: '12:50',
+                  startRecur: '2019-07-01T08:30:00',
+                  color: 'purple',
+                  allDay: false,
+                  daysOfWeek: [1],
+                  borderColor: 'black'
+                }
+                ]} />
+            </div>
+            : ""}
         </div>
       </div>
     );
@@ -396,7 +499,6 @@ componentDidMount = () => {
       allday: 'false'
     })
   }
-
 }
 
 

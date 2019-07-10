@@ -7,6 +7,13 @@ Accordion {
   overflow: visible;
 }
 
+.fc-today {
+  background: #FFF !important;
+  border: none !important;
+  border-top: 1px solid #ddd !important;
+  font-weight: bold;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
