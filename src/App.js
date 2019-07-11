@@ -89,6 +89,7 @@ class App extends React.Component {
     scroll.scrollToBottom();
   }
 
+
   course1update = (update) => {
     const filterarr = this.state.courses_bio.filter(item => item !== update)
     this.setState({
@@ -184,8 +185,7 @@ class App extends React.Component {
     const buttonPressStyle = (this.state.hideGenerate) ? {display:'none'} : {};
     return (
       <div className="App">
-        
-          <div className="info">
+        <div className="info">
           <div className="my-form"></div>
           <Container>
             <Row >
@@ -377,7 +377,7 @@ class App extends React.Component {
                     }}
                     displayEventTime = {false}
                     eventColor =  'red'
-                    // eventTextColor = 'red'
+                    eventTextColor = 'white'
                     header = {false}
                     // droppable='true' 
                     minTime="7:00am" 
@@ -399,6 +399,7 @@ class App extends React.Component {
           {this.state.hideGenerate ?
             <div style={{marginTop:'40px'}}>
               <h1>Generated Timetable</h1>
+              <h3>1/20</h3>
               <FullCalendar
                 columnHeaderFormat={{
                   weekday: 'short'
@@ -415,11 +416,16 @@ class App extends React.Component {
                 minTime="7:00am"
                 eventTextColor='white'
                 allDaySlot={false}
+                eventMouseEnter={function(mouseEnterInfo) {
+
+                  }
+                }
                 events={[{ /* event 1 */
                   title: this.state.course1,
                   startTime: '08:30',
                   endTime: '09:50',
                   startRecur: '2019-07-06T08:30:00',
+                  description:'yeet',
                   color: 'purple',
                   allDay: false,
                   daysOfWeek: [1, 4] // Repeat monday and thursday
@@ -494,7 +500,7 @@ class App extends React.Component {
   addEventDrag(info) {
     let calendarApi = this.calendarRef.current.getApi()
     calendarApi.addEvent({
-      title: '',
+      title: 'Unavailable',
       start: info.startStr,
       end: info.endStr,
       allday: 'false'
