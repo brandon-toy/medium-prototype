@@ -398,7 +398,7 @@ class App extends React.Component {
          </div>
           {this.state.hideGenerate ?
             <div style={{marginTop:'40px'}}>
-              <h1>Generated Timetable</h1>
+              <h1>Generated Timetables</h1>
               <h3>1/20</h3>
               <FullCalendar
                 columnHeaderFormat={{
@@ -408,7 +408,7 @@ class App extends React.Component {
                 plugins={[timegridPlugin, interactionPlugin, dayGridPlugin]}
                 defaultView="timeGridWeek"
                 weekends={false}
-                maxTime='18:00:00'
+                // maxTime='18:00:00'
                 header={{
                   left: 'prev,next',
                   right:''
