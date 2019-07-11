@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Accordion,Card,Container,Button,Row,Col,ProgressBar} from 'react-bootstrap'
+import {Accordion,Card,Container,Button,Row,Col,ProgressBar,ButtonGroup,ButtonToolbar} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import FullCalendar from '@fullcalendar/react'
@@ -399,7 +399,34 @@ class App extends React.Component {
           {this.state.hideGenerate ?
             <div style={{marginTop:'40px'}}>
               <h1>Generated Timetables</h1>
-              <h3>1/20</h3>
+              <h4>1/20</h4>
+              <div>
+                <ButtonToolbar style={{ marginBottom: '20px' }}>
+                  <ButtonGroup className="text-right" aria-label="Basic example" style={{ marginRight: '4px' }} >
+                    <Button  variant="secondary">&lt;</Button>
+                    <Button variant="secondary">&gt;</Button>
+                  </ButtonGroup>
+                  <Button style={{ marginRight: '4px' }}  variant="outline-info">Favourite</Button>
+                  <Button style={{ marginRight: '4px' }}  variant="outline-danger">Delete</Button>
+                </ButtonToolbar>
+                {/* <Container style={{marginBottom:'20px'}}>
+                  <Row>
+                    <Col sm={0}>
+                      <ButtonGroup className="text-right" aria-label="Basic example">
+                        <Button variant="secondary">&lt;</Button>
+                        <Button variant="secondary">&gt;</Button>
+                      </ButtonGroup>
+                    </Col>
+                    <Col sm={2}>
+                      <Button variant="outline-info">Favourite</Button>
+                      {/* <Button variant="outline-info">Favourite</Button> */}
+                    {/* </Col>
+                    <Col sm={0}>
+                      <Button variant="outline-danger">Delete</Button>
+                    </Col>
+                  </Row> *
+                </Container> */}
+              </div>
               <FullCalendar
                 columnHeaderFormat={{
                   weekday: 'short'
@@ -409,10 +436,11 @@ class App extends React.Component {
                 defaultView="timeGridWeek"
                 weekends={false}
                 // maxTime='18:00:00'
-                header={{
-                  left: 'prev,next',
-                  right:''
-                }}
+                // header={{
+                //   left: 'prev,next',
+                //   right:''
+                // }}
+                header={false}
                 minTime="7:00am"
                 eventTextColor='white'
                 allDaySlot={false}
@@ -491,6 +519,14 @@ class App extends React.Component {
                   borderColor: 'black'
                 }
                 ]} />
+              <div style={{marginTop:'20px'}}>
+                <Button variant="primary" size="lg" block>
+                  View All Favourited Timetables
+                </Button>
+                <Button variant="secondary" size="lg" block>
+                  Favourite Timetable and save CRN Codes
+                </Button>
+              </div>
             </div>
             : ""}
         </div>
