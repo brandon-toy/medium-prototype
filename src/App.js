@@ -445,10 +445,9 @@ class App extends React.Component {
                 minTime="7:00am"
                 eventTextColor='white'
                 allDaySlot={false}
-                eventMouseEnter={function(mouseEnterInfo) {
-
-                  }
-                }
+                eventClick={() => {
+                  window.open('https://web.uvic.ca/calendar2019-05/CDs/BIOL/184.html','_blank')
+                  }}
                 events={[{ /* event 1 */
                   title: this.state.course1,
                   startTime: '08:30',
@@ -520,7 +519,7 @@ class App extends React.Component {
                   borderColor: 'black'
                 }
                 ]} />
-              <div style={{marginTop:'20px'}}>
+              <div style={{marginTop:'20px',marginBottom:'50px'}}>
                 <Button variant="primary" size="lg" block>
                   View All Favourited Timetables
                 </Button>
