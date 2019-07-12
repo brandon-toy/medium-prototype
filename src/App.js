@@ -440,6 +440,7 @@ class App extends React.Component {
                 //   left: 'prev,next',
                 //   right:''
                 // }}
+                maxTime='21:00'
                 header={false}
                 minTime="7:00am"
                 eventTextColor='white'
