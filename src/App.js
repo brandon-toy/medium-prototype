@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Accordion,Card,Container,Button,Row,Col,ProgressBar,ButtonGroup,ButtonToolbar} from 'react-bootstrap'
+import {Accordion,Card,Container,Button,Row,Col,ProgressBar,ButtonGroup,ButtonToolbar,Modal} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import FullCalendar from '@fullcalendar/react'
@@ -34,6 +34,7 @@ class App extends React.Component {
         {value:'Second Term: Jan - Apr 2020', label:'Second Term: Jan - Apr 2020'},
         {value:'First Term: Sep - Dec 2019', label:'First Term: Sep - Dec 2019'}
       ],
+      eventShow: false,
       events: [{
       }],
       courses_bio:[
@@ -63,8 +64,7 @@ class App extends React.Component {
     this.course3update = this.course3update.bind(this);
     this.course4update = this.course4update.bind(this);
   }
-
-
+  
   changeSemester = (semester) => {
     console.log(this.state.semester)
     if(this.state.courses !== '0') {
@@ -364,7 +364,6 @@ class App extends React.Component {
                     columnHeaderFormat = {{
                       weekday:'short'
                     }}
-                    // allDaySlot={false}
                     plugins={[ timegridPlugin,interactionPlugin ]} 
                     selectable='true'
                     unselectAuto={false}
@@ -379,9 +378,7 @@ class App extends React.Component {
                     eventColor =  'red'
                     eventTextColor = 'white'
                     header = {false}
-                    // droppable='true' 
                     minTime="7:00am" 
-                    // allDayText='Click Here'
                     events={this.state.events}
                     />
               </Card.Body>
@@ -409,23 +406,6 @@ class App extends React.Component {
                   <Button style={{ marginRight: '4px' }}  variant="outline-info">Favourite</Button>
                   <Button style={{ marginRight: '4px' }}  variant="outline-danger">Delete</Button>
                 </ButtonToolbar>
-                {/* <Container style={{marginBottom:'20px'}}>
-                  <Row>
-                    <Col sm={0}>
-                      <ButtonGroup className="text-right" aria-label="Basic example">
-                        <Button variant="secondary">&lt;</Button>
-                        <Button variant="secondary">&gt;</Button>
-                      </ButtonGroup>
-                    </Col>
-                    <Col sm={2}>
-                      <Button variant="outline-info">Favourite</Button>
-                      {/* <Button variant="outline-info">Favourite</Button> */}
-                    {/* </Col>
-                    <Col sm={0}>
-                      <Button variant="outline-danger">Delete</Button>
-                    </Col>
-                  </Row> *
-                </Container> */}
               </div>
               <FullCalendar
                 columnHeaderFormat={{
@@ -435,18 +415,15 @@ class App extends React.Component {
                 plugins={[timegridPlugin, interactionPlugin, dayGridPlugin]}
                 defaultView="timeGridWeek"
                 weekends={false}
-                // maxTime='18:00:00'
-                // header={{
-                //   left: 'prev,next',
-                //   right:''
-                // }}
                 maxTime='21:00'
                 header={false}
                 minTime="7:00am"
                 eventTextColor='white'
                 allDaySlot={false}
                 eventClick={() => {
-                  window.open('https://web.uvic.ca/calendar2019-05/CDs/BIOL/184.html','_blank')
+                   this.setState({
+                     eventShow: true
+                   })
                   }}
                 events={[{ /* event 1 */
                   title: this.state.course1,
@@ -486,7 +463,7 @@ class App extends React.Component {
                   startTime: '13:00',
                   endTime: '14:20',
                   startRecur: '2019-07-01T08:30:00',
-                  color: 'gray',
+                  color: 'rgb(186, 180, 180)',
                   allDay: false,
                   daysOfWeek: [5],
                   borderColor: 'black'
@@ -495,7 +472,7 @@ class App extends React.Component {
                   startTime: '11:30',
                   endTime: '12:20',
                   startRecur: '2019-07-01T08:30:00',
-                  color: 'orange',
+                  color: 'rgb(252, 207, 128)',
                   allDay: false,
                   daysOfWeek: [3],
                   borderColor: 'black'
@@ -504,7 +481,7 @@ class App extends React.Component {
                   startTime: '14:00',
                   endTime: '15:20',
                   startRecur: '2019-07-01T08:30:00',
-                  color: 'blue',
+                  color: 'rgb(125, 116, 252)',
                   allDay: false,
                   daysOfWeek: [2],
                   borderColor: 'black'
@@ -513,12 +490,45 @@ class App extends React.Component {
                   startTime: '10:00',
                   endTime: '12:50',
                   startRecur: '2019-07-01T08:30:00',
-                  color: 'purple',
+                  color: 'rgb(183, 91, 183)',
                   allDay: false,
                   daysOfWeek: [1],
                   borderColor: 'black'
                 }
                 ]} />
+                <Modal
+                  size="sm"
+                  show={this.state.eventShow}
+                  onHide={() => this.setState({
+                    eventShow: false
+                  })}
+                  aria-labelledby="example-modal-sizes-title-sm"
+                 >
+                  <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-sm">
+                      {this.state.course1}
+                </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div>
+                      <Container style={{textAlign:'center'}}>
+                        <Row>
+                          <Col><div style={{color:'red'}}>M</div></Col>
+                          <Col>T</Col>
+                          <Col>W</Col>
+                          <Col><div style={{ color: 'red' }}>R</div></Col>
+                          <Col>F</Col>
+                        </Row>
+                      </Container>
+                      <p></p>
+                      <div>Time: 8:30 - 9:50</div>
+                      <div>Building: ECS 123</div>
+                      <div>Prof: Mr. Buchko</div>
+                      <div>CRN: 12836</div>
+                      <a href="https://web.uvic.ca/calendar2019-05/CDs/BIOL/184.html" target="__blank">Course Info</a>
+                    </div>
+                  </Modal.Body>
+                </Modal>
               <div style={{marginTop:'20px',marginBottom:'50px'}}>
                 <Button variant="primary" size="lg" block>
                   View All Favourited Timetables
