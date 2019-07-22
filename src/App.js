@@ -277,7 +277,7 @@ class App extends React.Component {
         ( 
         <Container> 
           Optional
-          <Accordion defaultActiveKey="0">
+          <Accordion>
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="0" onChange={this.course1update}>
               Specific Course Sections
