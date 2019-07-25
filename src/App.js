@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import {Accordion,Card,Container,Button,Row,Col,ProgressBar,ButtonGroup,ButtonToolbar,Modal} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { faCalendar,faRedo } from '@fortawesome/free-solid-svg-icons'
 import FullCalendar from '@fullcalendar/react'
 import timegridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -19,6 +19,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       now: 0,
+      currCalendar: 1,
+      allCalendars: 20,
       semester:null,
       selectedoption: null,
       progressbarcolor: 'info',
@@ -28,6 +30,7 @@ class App extends React.Component {
       course2: '',
       course3: '',
       course4: '',
+      crnShow: false,
       animated: true,
       semester_options:[
         {value:'Summer Term: May - Aug 2020', label:'Summer Term: May - Aug 2020'},
@@ -35,6 +38,7 @@ class App extends React.Component {
         {value:'First Term: Sep - Dec 2019', label:'First Term: Sep - Dec 2019'}
       ],
       eventShow: false,
+      deletePopup: false,
       events: [{
       }],
       courses_bio:[
@@ -63,8 +67,44 @@ class App extends React.Component {
     this.course2update = this.course2update.bind(this);
     this.course3update = this.course3update.bind(this);
     this.course4update = this.course4update.bind(this);
+    this.minus = this.minus.bind(this);
+    this.plug = this.plus.bind(this);
+    this.minusTotal = this.minusTotal.bind(this);
   }
   
+  minusTotal = () => {
+    this.setState({
+      allCalendars: this.state.allCalendars - 1,
+      currCalendar: 1,
+      deletePopup: false
+    })
+  }
+
+  minus = () => {
+    console.log(this.state.currCalendar)
+    if(this.state.currCalendar === 1) {
+      this.setState({
+        currCalendar: 20
+      })
+    } else {
+      this.setState({
+        currCalendar: this.state.currCalendar - 1
+      })
+    }
+  }
+
+  plus = () => {
+    if(this.state.currCalendar === this.state.allCalendars) {
+      this.setState({
+        currCalendar: 1 
+      })
+    } else {
+      this.setState({
+        currCalendar: this.state.currCalendar + 1
+      })
+    }
+  }
+
   changeSemester = (semester) => {
     console.log(this.state.semester)
     if(this.state.courses !== '0') {
@@ -393,20 +433,85 @@ class App extends React.Component {
             <Button onClick={this.buttonPress} style={buttonPressStyle}>Generate!</Button> 
           : <div></div>}
          </div>
+         <div>
           {this.state.hideGenerate ?
-            <div style={{marginTop:'40px'}}>
-              <h1>Generated Timetables</h1>
-              <h4>1/20</h4>
+            <div>
+            <h1>Generated Timetables</h1>
+            <div>
+            {this.state.currCalendar}/{this.state.allCalendars}
+            </div>
               <div>
                 <ButtonToolbar style={{ marginBottom: '20px' }}>
                   <ButtonGroup className="text-right" aria-label="Basic example" style={{ marginRight: '4px' }} >
-                    <Button  variant="secondary">&lt;</Button>
-                    <Button variant="secondary">&gt;</Button>
+                    <Button variant="secondary" onClick={this.minus}>&lt;</Button>
+                    <Button variant="secondary" onClick={this.plus}>&gt;</Button>
                   </ButtonGroup>
-                  <Button style={{ marginRight: '4px' }}  variant="outline-info">Favourite</Button>
-                  <Button style={{ marginRight: '4px' }}  variant="outline-danger">Delete</Button>
+                  <Button onClick={() => this.setState({
+                    crnShow: true
+                  })} style={{marginRight: '4px'}} variant="outline-info">CRN Course Codes</Button>
+                    <Button style={{ marginRight: '4px' }} variant="outline-primary">Favourite</Button>
+                  <Button style={{ marginRight: '4px' }} onClick={() => {
+                    this.setState({
+                      deletePopup: true
+                    })
+                  }} variant="outline-danger">Delete</Button>
+                    <Modal show={this.state.deletePopup} onHide={() => {
+                      this.setState({
+                        crnShow: false
+                      })
+                    }} centered>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Are you sure you want to delete this calendar?</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Footer>
+                        <Button variant="danger" onClick={() => {
+                          this.setState({
+                            deletePopup: false
+                          })
+                        }}>
+                          Cancel
+                        </Button>
+                        <Button variant="success" onClick={this.minusTotal}>
+                          Yes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  <Modal size="lg" show={this.state.crnShow} onHide={() => this.setState({
+                    crnShow:false
+                  })} centered>
+                      <Modal.Header closeButton>
+                        <Modal.Title id="example-modal-sizes-title-lg">
+                          CRN Codes
+                       </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Container>
+                          <div style={{fontWeight:'bold'}}>Course</div>
+                          <Row style={{marginTop:'5px'}}>
+                            <Col>{this.state.course1+": 12345"}</Col>
+                            <Col>{this.state.course2 + ": 69827"}</Col>
+                            <Col>{this.state.course3 + ": 42230"}</Col>
+                            <Col>{this.state.course4 + ": 94032"}</Col>
+                          </Row>
+                          <div style={{fontWeight:'bold', marginTop:'10px'}}>Labs/Tutorials</div>
+                          <Row style={{marginTop:'5px'}}>
+                            <Col>{this.state.course1+ " B01: 12346"}</Col>
+                            <Col>{this.state.course2 + " T02: 69828"}</Col>
+                            <Col>{this.state.course3 + " B01: 42231"}</Col>
+                            <Col>{this.state.course4 + " B03: 94033"}</Col>
+                          </Row>
+                        </Container>
+                      </Modal.Body>
+                  </Modal>
                 </ButtonToolbar>
               </div>
+            </div> : ""}
+          </div>
+          <div style={{marginTop: '2px'}}>
+          {/* schedule 2 */}
+          <div id="schedule2">
+            {(this.state.currCalendar === 2 && this.state.hideGenerate) ? (
+            <div style={{marginTop:'40px'}}>
               <FullCalendar
                 columnHeaderFormat={{
                   weekday: 'short'
@@ -426,7 +531,7 @@ class App extends React.Component {
                    })
                   }}
                 events={[{ /* event 1 */
-                  title: this.state.course1,
+                  title: this.state.course1 + " A02",
                   startTime: '08:30',
                   endTime: '09:50',
                   startRecur: '2019-07-06T08:30:00',
@@ -435,7 +540,7 @@ class App extends React.Component {
                   allDay: false,
                   daysOfWeek: [1, 4] // Repeat monday and thursday
                 }, { // Event 2
-                  title: this.state.course2,
+                  title: this.state.course2 + " A01",
                   startTime: '9:30',
                   endTime: '10:20',
                   startRecur: '2019-07-06T08:30:00',
@@ -443,7 +548,7 @@ class App extends React.Component {
                   allDay: false,
                   daysOfWeek: [2, 3, 5]
                 }, { // Event 3
-                  title: this.state.course3,
+                  title: this.state.course3 + " A01",
                   startTime: '10:30',
                   endTime: '11:20',
                   startRecur: '2019-07-06T08:30:00',
@@ -451,7 +556,7 @@ class App extends React.Component {
                   allDay: false,
                   daysOfWeek: [2, 3, 5]
                 }, { // Event 4
-                  title: this.state.course4,
+                  title: this.state.course4 + " A02",
                   startTime: '13:00',
                   endTime: '14:20',
                   startRecur: '2019-07-01T08:30:00',
@@ -494,6 +599,13 @@ class App extends React.Component {
                   allDay: false,
                   daysOfWeek: [1],
                   borderColor: 'black'
+                }, {
+                  title: 'no class',
+                  startTime: '7:00',
+                  endTime: '8:30',
+                  startRecur: '2019-07-01T08:30:00',
+                  daysOfWeek: [1,2,3,4,5],
+                  color: 'red'
                 }
                 ]} />
                 <Modal
@@ -530,16 +642,170 @@ class App extends React.Component {
                   </Modal.Body>
                 </Modal>
               <div style={{marginTop:'20px',marginBottom:'50px'}}>
-                <Button variant="primary" size="lg" block>
+                <Button variant="light" style={{marginRight:'10px'}} onClick={() => window.location.reload()}>
+                  <FontAwesomeIcon size='sm' icon={faRedo} />
+                </Button>
+                <Button style={{marginRight:'10px'}} variant="info">
                   View All Favourited Timetables
                 </Button>
-                <Button variant="secondary" size="lg" block>
+                <Button style={{marginRight:'10px'}} variant="success">
                   Favourite Timetable and save CRN Codes
                 </Button>
               </div>
             </div>
+            )  
             : ""}
+          </div>
+          {/* Schedule 1 */}
+          <div>
+            {(this.state.currCalendar === 1 && this.state.hideGenerate) ? (
+              <div style={{ marginTop: '40px' }}>
+                <FullCalendar
+                  columnHeaderFormat={{
+                    weekday: 'short'
+                  }}
+                  style={{ marginTop: '20px' }}
+                  plugins={[timegridPlugin, interactionPlugin, dayGridPlugin]}
+                  defaultView="timeGridWeek"
+                  weekends={false}
+                  maxTime='21:00'
+                  header={false}
+                  minTime="7:00am"
+                  eventTextColor='white'
+                  allDaySlot={false}
+                  eventClick={() => {
+                    this.setState({
+                      eventShow: true
+                    })
+                  }}
+                  events={[{ /* event 1 */
+                    title: this.state.course1 + " A01",
+                    startTime: '10:30',
+                    endTime: '11:50',
+                    startRecur: '2019-07-06T08:30:00',
+                    color: 'purple',
+                    allDay: false,
+                    daysOfWeek: [1, 4] // Repeat monday and thursday
+                  }, { // Event 2
+                    title: this.state.course2 + " A02",
+                    startTime: '12:00', 
+                    endTime: '13:20',
+                    startRecur: '2019-07-06T08:30:00',
+                    color: 'orange',
+                    allDay: false,
+                    daysOfWeek: [2, 3, 5]
+                  }, { // Event 3
+                    title: this.state.course3 + " A03",
+                    startTime: '9:20',
+                    endTime: '10:30',
+                    startRecur: '2019-07-06T08:30:00',
+                    color: 'blue',
+                    allDay: false,
+                    daysOfWeek: [2, 3, 5]
+                  }, { // Event 4
+                    title: this.state.course4 + " A02",
+                    startTime: '13:00',
+                    endTime: '14:20',
+                    startRecur: '2019-07-01T08:30:00',
+                    color: 'gray',
+                    allDay: false,
+                    daysOfWeek: [1, 4]
+                  }, {
+                    title: this.state.course4 + " B01",
+                    startTime: '13:30',
+                    endTime: '14:50',
+                    startRecur: '2019-07-01T08:30:00',
+                    color: 'rgb(186, 180, 180)',
+                    allDay: false,
+                    daysOfWeek: [5],
+                    borderColor: 'black'
+                  }, {
+                    title: this.state.course2 + " T03",
+                    startTime: '13:30',
+                    endTime: '14:20',
+                    startRecur: '2019-07-01T08:30:00',
+                    color: 'rgb(252, 207, 128)',
+                    allDay: false,
+                    daysOfWeek: [3],
+                    borderColor: 'black'
+                  }, {
+                    title: this.state.course3 + " B01",
+                    startTime: '14:30',
+                    endTime: '15:50',
+                    startRecur: '2019-07-01T08:30:00',
+                    color: 'rgb(125, 116, 252)',
+                    allDay: false,
+                    daysOfWeek: [2],
+                    borderColor: 'black'
+                  }, {
+                    title: this.state.course1 + " B01",
+                    startTime: '14:30',
+                    endTime: '17:20',
+                    startRecur: '2019-07-01T08:30:00',
+                    color: 'rgb(183, 91, 183)',
+                    allDay: false,
+                    daysOfWeek: [1],
+                    borderColor: 'black'
+                    }, {
+                      title: 'no class',
+                      startTime: '7:00',
+                      endTime: '8:30',
+                      startRecur: '2019-07-01T08:30:00',
+                      daysOfWeek: [1, 2, 3, 4, 5],
+                      color: 'red'
+                    }
+                  ]} />
+                <Modal
+                  size="sm"
+                  show={this.state.eventShow}
+                  onHide={() => this.setState({
+                    eventShow: false
+                  })}
+                  aria-labelledby="example-modal-sizes-title-sm"
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-sm">
+                      {this.state.course1}
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div>
+                      <Container style={{ textAlign: 'center' }}>
+                        <Row>
+                          <Col><div style={{ color: 'red' }}>M</div></Col>
+                          <Col>T</Col>
+                          <Col>W</Col>
+                          <Col><div style={{ color: 'red' }}>R</div></Col>
+                          <Col>F</Col>
+                        </Row>
+                      </Container>
+                      <p></p>
+                      <div>Time: 8:30 - 9:50</div>
+                      <div>Building: ECS 123</div>
+                      <div>Prof: Mr. Buchko</div>
+                      <div>CRN: 12836</div>
+                      <a href="https://web.uvic.ca/calendar2019-05/CDs/BIOL/184.html" target="__blank">Course Info</a>
+                    </div>
+                  </Modal.Body>
+                </Modal>
+                <div style={{ marginTop: '20px', marginBottom: '50px' }}>
+                  <Button variant="light" style={{ marginRight: '10px' }} onClick={() => window.location.reload()}>
+                    <FontAwesomeIcon size='sm' icon={faRedo} />
+                  </Button>
+                  <Button style={{ marginRight: '10px' }} variant="info">
+                    View All Favourited Timetables
+                </Button>
+                  <Button style={{ marginRight: '10px' }} variant="success">
+                    Favourite Timetable and save CRN Codes
+                </Button>
+                </div>
+              </div>
+            )
+              : ""}
+          </div>
+          </div>
         </div>
+        
       </div>
     );
   }
